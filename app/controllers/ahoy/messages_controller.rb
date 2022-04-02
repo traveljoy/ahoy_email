@@ -16,6 +16,9 @@ module Ahoy
     end
 
     def click
+      # Don't redirect unless we have a message
+      return redirect_to main_app.root_url unless @message.present?
+
       if @message && !@message.clicked_at
         @message.clicked_at = Time.now
         @message.opened_at ||= @message.clicked_at
