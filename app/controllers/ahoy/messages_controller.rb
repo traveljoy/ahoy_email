@@ -1,5 +1,7 @@
 module Ahoy
   class MessagesController < ActionController::Base
+    around_action :use_write_database, only: [:click]
+
     if respond_to? :before_action
       before_action :set_message
     else
@@ -60,6 +62,13 @@ module Ahoy
       res = 0
       b.each_byte { |byte| res |= byte ^ l.shift }
       res == 0
+    end
+
+    private
+    def use_write_database
+      ActiveRecord::Base.connected_to(role: :writing) do
+        yield if block_given?
+      end
     end
   end
 end
