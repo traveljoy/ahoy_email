@@ -1,6 +1,6 @@
 module Ahoy
   class MessagesController < ActionController::Base
-    around_action :use_write_database, only: [:click]
+    around_action :use_write_database
 
     if respond_to? :before_action
       before_action :set_message
