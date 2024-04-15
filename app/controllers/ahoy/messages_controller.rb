@@ -18,8 +18,8 @@ module Ahoy
     end
 
     def click
-      # Don't redirect unless we have a message
-      return redirect_to 'https://traveljoy.com/404.html' unless @message.present?
+      # Don't redirect if the message is missing or the sender was locked for spam
+      return redirect_to 'https://traveljoy.com/404.html' if @message.blank? || user_locked_for_spam?
 
       if @message && !@message.clicked_at
         @message.clicked_at = Time.now
@@ -69,6 +69,10 @@ module Ahoy
       ActiveRecord::Base.connected_to(role: :writing) do
         yield if block_given?
       end
+    end
+
+    def user_locked_for_spam?
+      @message.user.sender.suspected_spammer?
     end
   end
 end
