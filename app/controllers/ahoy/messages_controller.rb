@@ -19,7 +19,7 @@ module Ahoy
 
     def click
       # Don't redirect if the message is missing or the sender was locked for spam
-      return redirect_to 'https://traveljoy.com/404.html' if @message.blank? || user_locked_for_spam?
+      return redirect_to 'https://traveljoy.com/404.html', allow_other_host: true if @message.blank? || user_locked_for_spam?
 
       if @message && !@message.clicked_at
         @message.clicked_at = Time.now
@@ -30,9 +30,9 @@ module Ahoy
       signature = OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new("sha1"), AhoyEmail.secret_token, url)
       publish :click, url: params[:url]
       if secure_compare(params[:signature].to_s, signature)
-        redirect_to url
+        redirect_to url, allow_other_host: true
       else
-        redirect_to AhoyEmail.invalid_redirect_url || main_app.root_url
+        redirect_to AhoyEmail.invalid_redirect_url || main_app.root_url, allow_other_host: true
       end
     end
 
