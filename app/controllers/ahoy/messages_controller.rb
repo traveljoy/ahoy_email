@@ -19,7 +19,7 @@ module Ahoy
 
     def click
       # Don't redirect if the message is missing or the sender was locked for spam
-      return redirect_to 'https://traveljoy.com/404.html', allow_other_host: true if @message.blank? || user_locked_for_spam?
+      return redirect_to 'https://traveljoy.com/404.html', allow_other_host: true if @message.blank? || user_locked_for_spam? || user_messaging_locked?
 
       if @message && !@message.clicked_at
         @message.clicked_at = Time.now
@@ -73,6 +73,10 @@ module Ahoy
 
     def user_locked_for_spam?
       @message.user.user.suspected_spammer?
+    end
+
+    def user_messaging_locked
+      @message.user.user.messaging_locked?
     end
   end
 end
