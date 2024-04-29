@@ -75,7 +75,7 @@ module Ahoy
       @message.user.user.suspected_spammer?
     end
 
-    def user_messaging_locked
+    def user_messaging_locked?
       @message.user.user.messaging_locked?
     end
   end
